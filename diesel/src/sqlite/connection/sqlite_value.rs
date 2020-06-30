@@ -34,6 +34,9 @@ impl SqliteValue {
         unsafe {
             let ptr = ffi::sqlite3_value_text(self.value());
             let len = ffi::sqlite3_value_bytes(self.value());
+            if ptr.is_null() {
+                panic!("Null ptr with len: {}", len);
+            }
             let bytes = slice::from_raw_parts(ptr as *const u8, len as usize);
             str::from_utf8_unchecked(bytes)
         }
